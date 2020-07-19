@@ -1,0 +1,1 @@
+{"ast":null,"code":"export var baseUrl = 'http://192.168.100.118:8000';","map":{"version":3,"sources":["C:/Users/Michal/WebstormProjects/new_react/my-react-app/shared/baseUrl.js"],"names":["baseUrl"],"mappings":"AAAA,OAAO,IAAMA,OAAO,GAAG,6BAAhB","sourcesContent":["export const baseUrl = 'http://192.168.100.118:8000';\r\n"]},"metadata":{},"sourceType":"module"}
