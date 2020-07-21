@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {ScrollView, Text, View, FlatList , Modal , Button, StyleSheet} from "react-native";
+import React, {Component , useRef} from "react";
+import {ScrollView, Text, View, FlatList , Modal , Button, StyleSheet, Alert , PanResponder} from "react-native";
 import {Card, Icon , Input , Rating ,AirbnbRating} from "react-native-elements";
 import {baseUrl} from "../shared/baseUrl";
 import {connect} from "react-redux";
@@ -24,9 +24,49 @@ function RenderDish  (props) {
 
     const dish = props.dish;
 
+    const viewRef = useRef(null);
+
+    const recognizeDrag = ({moveX , moveY , dx , dy}) =>{
+      if(dx < -200)
+          return true;
+      else
+          return false;
+    };
+
+    const recognizeComment = ({moveX , moveY , dx , dy}) => {
+        if(dx > 200)
+            return true;
+        else
+            return false;
+    };
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: (e, gestureState) => {
+            return true
+        },
+            onPanResponderGrant: () => {viewRef.current.rubberBand(1000)}
+        ,
+        onPanResponderEnd: (e, gestureState) => {
+        console.log("pan responder end" , gestureState);
+        if(recognizeDrag(gestureState))
+            Alert.alert(
+                "Add favorite",
+                "Are you sure you want to add " + dish.name + " to favorites ?", [
+                    {text:"Cancel" , onPress: () => console.log("Cancel presses") , style:"cancel"},
+                    {text:"Ok" , onPress:() => props.favorite ? console.log("Already added") : props.onPress()}
+                ],
+                {cancelable:false}
+            );
+        if(recognizeComment(gestureState))
+        {props.toggle()}
+        return true;
+        }
+
+    });
+
     if(dish != null)
     {   return(
-        <Animatable.View animation="fadeInDown" duration={2000} delay={1000} useNativeDriver={true}>
+        <Animatable.View animation="fadeInDown" duration={2000} delay={1000} useNativeDriver={true}  ref={viewRef} {...panResponder.panHandlers}>
         <Card
             featuredTitle={dish.name}
             image={{uri: baseUrl + dish.image}}>

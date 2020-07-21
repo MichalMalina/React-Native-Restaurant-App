@@ -11,6 +11,7 @@ import Home from "./HomeComponent";
 import RenderContact from "./ContactComponent";
 import Favorites from "./FavoriteComponent";
 import AboutUs from "./AboutUsComponent";
+import  Login from "./LoginComponent"
 import {connect} from "react-redux";
 import {fetchComments , fetchDishes , fetchLeaders , fetchPromos } from "../redux/ActionCreators";
 import registerRootComponent from "expo/build/launch/registerRootComponent";
@@ -119,6 +120,22 @@ function ReserveNavigatorScreen() {
     );
 }
 
+const LoginNavigator = createStackNavigator();
+function LoginNavigatorScreen() {
+    return(
+        <LoginNavigator.Navigator
+            initialRouteName = "Menu"
+            screenOptions = {HeaderOptions}
+        >
+            <LoginNavigator.Screen
+                name ="Login"
+                component = {Login}
+                options = {({navigation}) => ({headerLeft: () => <IconOptions navigation={navigation}/>})}
+            />
+        </LoginNavigator.Navigator>
+    );
+}
+
 const AboutUsNavigator = createStackNavigator();
 function AboutUsNavigatorScreen() {
     return(
@@ -221,6 +238,13 @@ function MainNavigatorDrawer() {
             }}/>
             <FavoriteNavigator.Screen name = "Favorites" component={FavoriteNavigatorScreen} options={{drawerIcon: ({tintColor}) =>
                     <Icon name="heart"
+                          type="font-awesome"
+                          size={24}
+                          color={tintColor}
+                    />
+            }}/>
+            <LoginNavigator.Screen name = "Login" component={LoginNavigatorScreen} options={{drawerIcon: ({tintColor}) =>
+                    <Icon name="sign-in"
                           type="font-awesome"
                           size={24}
                           color={tintColor}
