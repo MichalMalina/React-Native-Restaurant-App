@@ -1,7 +1,9 @@
 import React , {Component} from "react"
-import {View , Text , Picker , StyleSheet, Button , Switch , Alert} from "react-native";
+import {View, Text, Picker, StyleSheet, Button, Switch, Alert, Platform} from "react-native";
 import DatePicker from "react-native-datepicker";
 import * as Animatable from "react-native-animatable"
+import {Notifications} from "expo"
+import * as Permissions from "expo-permissions"
 
 class Reserve extends Component{
 
@@ -13,6 +15,45 @@ class Reserve extends Component{
             guests:1,
             showModal:false
         }
+    }
+
+    async getPermissions() {
+        let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if(permission.status !== "granted")
+        {
+            permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if(permission.status !== "granted")
+            {Alert.alert("Permission not granted to show notifications")}
+        }
+        else {if (Platform.OS === "android") {
+           await  Notifications.createChannelAndroidAsync('notify', {
+                name: 'notify',
+                sound: true,
+                vibrate: true,
+
+            });
+        } }
+        return permission
+    }
+
+    async presentLocalNotification(date) {
+        await this.getPermissions();
+      Notifications.presentLocalNotificationAsync(
+            {
+                title:"Your Reservation",
+                body:"Reservation for" + date + " requested",
+                ios:{
+                    sound:true
+                },
+                android:{
+                    channelId:"notify",
+                    color:"#512DA8"
+                }
+
+            }
+        );
+
+
     }
 
     resetForm() {
@@ -37,7 +78,7 @@ class Reserve extends Component{
     formAlert = () =>
         Alert.alert(
             "Your Reservation OK?",
-            `Number of guests: ${this.state.guests}\n Smoking? ${this.smoking()}\n Date and Time ${this.state.date}\n` ,
+            `Number of guests: ${this.state.guests}\nSmoking? ${this.smoking()}\nDate and Time ${this.state.date}\n` ,
             [
                 {
                     text:"Ok",
@@ -105,7 +146,7 @@ class Reserve extends Component{
                 </View>
                 <View style={styles.formContainer}>
                     <Button
-                        onPress={() => this.formAlert()}
+                        onPress={() => {this.presentLocalNotification(this.state.date);this.formAlert()}}
                         title="Reserve"
                         color="#512DA8"
                         accessibilityLabel="Learn more about this purple button"

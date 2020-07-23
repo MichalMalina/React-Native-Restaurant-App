@@ -1,6 +1,6 @@
 import React, {Component , useRef} from "react";
-import {ScrollView, Text, View, FlatList , Modal , Button, StyleSheet, Alert , PanResponder} from "react-native";
-import {Card, Icon , Input , Rating ,AirbnbRating} from "react-native-elements";
+import {ScrollView, Text, View, FlatList , Modal , Button, StyleSheet, Alert , PanResponder, Share} from "react-native";
+import {Card, Icon , Input , Rating , AirbnbRating} from "react-native-elements";
 import {baseUrl} from "../shared/baseUrl";
 import {connect} from "react-redux";
 import {postFavorite} from "../redux/ActionCreators"
@@ -19,6 +19,8 @@ const mapDispatchToProps = dispatch => ({
     postFavorite: (dishId) => dispatch(postFavorite(dishId)),
     postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
 });
+
+
 
 function RenderDish  (props) {
 
@@ -64,6 +66,14 @@ function RenderDish  (props) {
 
     });
 
+    const shareDish = (title , message , url) => {
+    Share.share({
+        title:title,
+        message:title + ":" + message + "" + url,
+        url:url
+    }, {dialogTitle:"Share" + title}).then(() => console.log("Successful share prompt")).catch((error) => console.log("Share prompt error" , error))
+    };
+
     if(dish != null)
     {   return(
         <Animatable.View animation="fadeInDown" duration={2000} delay={1000} useNativeDriver={true}  ref={viewRef} {...panResponder.panHandlers}>
@@ -91,6 +101,13 @@ function RenderDish  (props) {
                       type="font-awesome"
                       color="#512DA8"
                       onPress={() => props.toggle()}
+                />
+                <Icon name={"share"}
+                      raised
+                      reverse
+                      type="font-awesome"
+                      color="#512DA8"
+                      onPress={() => shareDish(dish.name , dish.description , baseUrl + dish.image)}
                 />
             </View>
         </Card>
