@@ -11,7 +11,7 @@ import Home from "./HomeComponent";
 import RenderContact from "./ContactComponent";
 import Favorites from "./FavoriteComponent";
 import AboutUs from "./AboutUsComponent";
-import  Login from "./LoginComponent"
+import  Login from "./LoginComponent";
 import {connect} from "react-redux";
 import {fetchComments , fetchDishes , fetchLeaders , fetchPromos } from "../redux/ActionCreators";
 import registerRootComponent from "expo/build/launch/registerRootComponent";
